@@ -46,6 +46,28 @@ public class CartController {
         }
     }
 
+    /** 장바구니 항목 수량 업데이트 */
+    @PutMapping("/{cartItemId}")
+    public ResponseEntity<String> updateCartItem(@PathVariable Long cartItemId, @RequestParam int count) {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            String userEmail = userDetails.getUsername();
+            Long memberId = entityValidationService.validateMemberByEmail(userEmail).getId();
+
+            // 수량이 1 미만으로 내려가지 않도록 처리
+            if (count < 1) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("최소 수량은 1개입니다.");
+            }
+            cartService.updateCartItem(memberId, cartItemId, count);
+            return ResponseEntity.status(HttpStatus.OK).body("장바구니 항목의 수량이 업데이트되었습니다.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 에러가 발생했습니다.");
+        }
+    }
+
     /** 장바구니 삭제 */
     @DeleteMapping
     public ResponseEntity<String> deleteSelectedCarts(@RequestParam List<Long> cartItemIds) {

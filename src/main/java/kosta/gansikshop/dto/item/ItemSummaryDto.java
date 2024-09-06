@@ -7,12 +7,14 @@ import lombok.Getter;
 
 @Getter
 public class ItemSummaryDto {
+    private Long itemId;
     private String name;
     private int price;
     private String repImgUrl; // 대표 이미지 URL
 
     @Builder
-    private ItemSummaryDto(String name, int price, String repImgUrl) {
+    private ItemSummaryDto(Long itemId, String name, int price, String repImgUrl) {
+        this.itemId = itemId;
         this.name = name;
         this.price = price;
         this.repImgUrl = repImgUrl;
@@ -26,6 +28,7 @@ public class ItemSummaryDto {
                 .orElse(null);
 
         return ItemSummaryDto.builder()
+                .itemId(item.getId())
                 .name(item.getName())
                 .price(item.getPrice())
                 .repImgUrl(repImgUrl)

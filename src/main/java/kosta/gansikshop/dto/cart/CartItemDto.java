@@ -7,6 +7,8 @@ import lombok.Getter;
 
 @Getter
 public class CartItemDto {
+    private Long cartId;
+    private Long itemId;
     private String name;
     private int price;
     private String repImgUrl;
@@ -14,7 +16,9 @@ public class CartItemDto {
     private int currentPrice; // 현재 가격 (price * count)
 
     @Builder
-    private CartItemDto(String name, int price, String repImgUrl, int count, int currentPrice) {
+    private CartItemDto(Long cartId, Long itemId, String name, int price, String repImgUrl, int count, int currentPrice) {
+        this.cartId = cartId;
+        this.itemId = itemId;
         this.name = name;
         this.price = price;
         this.repImgUrl = repImgUrl;
@@ -22,7 +26,7 @@ public class CartItemDto {
         this.currentPrice = currentPrice;
     }
 
-    public static CartItemDto createCartItemDto(Item item, int count) {
+    public static CartItemDto createCartItemDto(Long cartId, Item item, int count) {
         String repImgUrl = item.getImages().stream()
                 .filter(ItemImg::isRepImgYn)
                 .map(ItemImg::getImgUrl)
@@ -30,6 +34,8 @@ public class CartItemDto {
                 .orElse(null);
 
         return CartItemDto.builder()
+                .cartId(cartId)
+                .itemId(item.getId())
                 .name(item.getName())
                 .price(item.getPrice())
                 .repImgUrl(repImgUrl)

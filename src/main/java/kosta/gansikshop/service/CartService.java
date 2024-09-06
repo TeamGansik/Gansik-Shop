@@ -41,6 +41,20 @@ public class CartService {
     }
 
     @Transactional
+    public void updateCartItem(Long memberId, Long cartItemId, int newCount) {
+        Cart cart = cartRepository.findById(cartItemId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 장바구니 항목을 찾을 수 없습니다."));
+
+        // 사용자 인증
+        if (!cart.getMember().getId().equals(memberId)) {
+            throw new IllegalStateException("해당 장바구니 항목에 접근할 권한이 없습니다.");
+        }
+
+        // 수량 업데이트
+        cart.updateCount(newCount);
+    }
+
+    @Transactional
     public void deleteCartItems(Long memberId, List<Long> cartItemIds) {
         if (cartItemIds.isEmpty()) {
             throw new IllegalArgumentException("아무 상품도 선택되지 않았습니다.");
@@ -52,7 +66,7 @@ public class CartService {
     public CartResponseDto getCartItems(Long memberId) {
         List<Cart> carts = cartRepository.findCartDetails(memberId, Optional.empty());
         List<CartItemDto> cartItemDtoList = carts.stream()
-                .map(cart -> CartItemDto.createCartItemDto(cart.getItem(), cart.getCount()))
+                .map(cart -> CartItemDto.createCartItemDto(cart.getId(), cart.getItem(), cart.getCount()))
                 .collect(Collectors.toList());
 
         return CartResponseDto.createCartResponseDto(cartItemDtoList);

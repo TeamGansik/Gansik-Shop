@@ -158,6 +158,7 @@ public class OrderService {
                 .map(order -> {
                     List<OrderItemResponseDto> itemResponseDtoList = order.getOrderItems().stream()
                             .map(orderItem -> OrderItemResponseDto.createOrderItemResponseDto(
+                                    orderItem.getId(),
                                     orderItem.getName(),
                                     orderItem.getCount(),
                                     orderItem.getTotalPrice() / orderItem.getCount(),

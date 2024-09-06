@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 @Getter
 public class ItemDetailDto {
+    private Long itemId;
     private String name;
     private int price;
     private String category;
@@ -20,7 +21,8 @@ public class ItemDetailDto {
     private LocalDateTime modifiedAt;  // 최종 업데이트 시간 (ISO 8601 형식)
 
     @Builder
-    private ItemDetailDto(String name, int price, String category, String repImgUrl, List<String> imgUrls, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+    private ItemDetailDto(Long itemId, String name, int price, String category, String repImgUrl, List<String> imgUrls, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+        this.itemId = itemId;
         this.name = name;
         this.price = price;
         this.category = category;
@@ -51,6 +53,7 @@ public class ItemDetailDto {
                 .collect(Collectors.toList());
 
         return ItemDetailDto.builder()
+                .itemId(item.getId())
                 .name(item.getName())
                 .price(item.getPrice())
                 .category(item.getCategory())

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderItemResponseDto {
+    private Long itemId;
     private String itemName;
     private int quantity;
     private int itemPrice;
@@ -15,7 +16,8 @@ public class OrderItemResponseDto {
     private String itemImageUrl; // 아이템의 대표 이미지 URL
 
     @Builder
-    private OrderItemResponseDto(String itemName, int quantity, int itemPrice, int totalPrice, String itemImageUrl) {
+    private OrderItemResponseDto(Long itemId, String itemName, int quantity, int itemPrice, int totalPrice, String itemImageUrl) {
+        this.itemId = itemId;
         this.itemName = itemName;
         this.quantity = quantity;
         this.itemPrice = itemPrice;
@@ -23,10 +25,11 @@ public class OrderItemResponseDto {
         this.itemImageUrl = itemImageUrl;
     }
 
-    public static OrderItemResponseDto createOrderItemResponseDto(String itemName, int quantity,
+    public static OrderItemResponseDto createOrderItemResponseDto(Long itemId, String itemName, int quantity,
                                                                   int itemPrice, int totalPrice, String itemImageUrl) {
 
         return OrderItemResponseDto.builder()
+                .itemId(itemId)
                 .itemName(itemName)
                 .quantity(quantity)
                 .itemPrice(itemPrice)
