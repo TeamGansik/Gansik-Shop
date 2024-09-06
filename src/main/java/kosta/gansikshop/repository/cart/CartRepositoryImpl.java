@@ -15,36 +15,7 @@ import java.util.Optional;
 public class CartRepositoryImpl implements CartRepositoryCustom{
 
     private final JPAQueryFactory queryFactory;
-
-//    @Override
-//    public List<Cart> findByMemberIdWithDetailsUsingQueryDSL(Long memberId) {
-//        QCart cart = QCart.cart;
-//        QMember member = QMember.member;
-//        QItem item = QItem.item;
-//
-//        return queryFactory
-//                .selectFrom(cart)
-//                .join(cart.member, member).fetchJoin()
-//                .join(cart.item, item).fetchJoin()
-//                .where(cart.member.id.eq(memberId))
-//                .fetch();
-//    }
-//
-//    @Override
-//    public Cart findByMemberIdAndItemIdWithDetailsUsingQueryDSL(Long memberId, Long itemId) {
-//        QCart cart = QCart.cart;
-//        QMember member = QMember.member;
-//        QItem item = QItem.item;
-//
-//        return queryFactory
-//                .selectFrom(cart)
-//                .join(cart.member, member).fetchJoin()
-//                .join(cart.item, item).fetchJoin()
-//                .where(cart.member.id.eq(memberId)
-//                        .and(cart.item.id.eq(itemId)))
-//                .fetchOne();
-//    }
-
+    
     @Override
     public List<Cart> findCartDetails(Long memberId, Optional<Long> itemId) {
         QCart cart = QCart.cart;

@@ -14,19 +14,15 @@ public class AuditorAwareImpl implements AuditorAware<String> {
     public Optional<String> getCurrentAuditor() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
-            log.debug("No authentication available in SecurityContext");
             return Optional.empty();
         }
 
         Object principal = authentication.getPrincipal();
         if (principal instanceof UserDetails) {
             String email = ((UserDetails) principal).getUsername();
-            log.debug("Current auditor (email): {}", email);  // 이메일 확인
             return Optional.ofNullable(email);
         }
 
-        log.debug("No principal found or principal is not UserDetails");
         return Optional.empty();
     }
-
 }
