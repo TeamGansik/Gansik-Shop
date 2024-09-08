@@ -87,7 +87,8 @@ public class MemberService {
                 findMember.getPhone(),
                 findMember.getAddress().getPostcode(),
                 findMember.getAddress().getRoadAddress(),
-                findMember.getAddress().getDetailAddress()
+                findMember.getAddress().getDetailAddress(),
+                findMember.getRole().toString()
         );
     }
 

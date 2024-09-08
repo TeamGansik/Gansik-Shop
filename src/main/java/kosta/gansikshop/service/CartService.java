@@ -42,8 +42,7 @@ public class CartService {
 
     @Transactional
     public void updateCartItem(Long memberId, Long cartItemId, int newCount) {
-        Cart cart = cartRepository.findById(cartItemId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 장바구니 항목을 찾을 수 없습니다."));
+        Cart cart = entityValidationService.validateCart(cartItemId);
 
         // 사용자 인증
         if (!cart.getMember().getId().equals(memberId)) {
@@ -59,7 +58,7 @@ public class CartService {
         if (cartItemIds.isEmpty()) {
             throw new IllegalArgumentException("아무 상품도 선택되지 않았습니다.");
         }
-        cartRepository.deleteAllByMemberIdAndItemIdIn(memberId, cartItemIds);
+        cartRepository.deleteAllByMemberIdAndIdIn(memberId, cartItemIds);
     }
 
     @Transactional(readOnly = true)

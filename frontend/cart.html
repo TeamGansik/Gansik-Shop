@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>장바구니</title>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="cart.css">
+</head>
+
+
+
+<body>
+  <header>
+    <div id="header-placeholder"></div>
+  </header>
+  <!-- 동적로딩 -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      function loadHTML(url, elementId) {
+        fetch(url)
+          .then(response => response.text())
+          .then(data => {
+            document.getElementById(elementId).innerHTML = data;
+          })
+          .catch(error => console.error('Error loading the HTML:', error));
+      }
+
+      loadHTML('header.html', 'header-placeholder');
+      loadHTML('footer.html', 'footer-placeholder');
+    });
+  </script>
+  <script>
+    document.addEventListener('mousemove', (e) => {
+        let mouseX = e.pageX + 0; //마우스에 얼마나 가까이 붙어 따라다니는가
+        let mouseY = e.pageY + 0; 
+
+        let cursor = document.querySelector('.cursor');
+        cursor.style.left = mouseX + 'px';
+        cursor.style.top = mouseY + 'px';
+    })
+  </script>
+
+  <!-- 마우스 효과 -->
+  <div class="cursor" style="z-index: 9999;">
+    <img src="/test/images/logo2.png">
+  </div>
+
+  <main>
+    <section>
+      <div class="basket">
+        <h2>장바구니</h2>
+      </div>
+      <div class="item">
+        <div class="choose-all">
+          <div>
+            <input type="checkbox" id="check-all">
+          </div>
+          <div class="unchoose">
+            <p>선택해제</p>
+          </div>
+          <div class="delete">
+            <button>선택삭제</button>
+          </div>
+        </div>
+        <div class="aaa"> <!--이름 아직 안정함-->
+          <div class="detail">
+            <div class="item-detail">
+              <div class="item-info">
+                <input class="item-check" type="checkbox">
+                <img src="https://via.placeholder.com/80x80">
+                <div class="item-name">
+                  <h4>사세 리얼찹라이드손살치킨1kg</h4>
+                  <div class="how-much">1원</div>
+                </div>
+              </div>
+              <div class="item-option">
+                <div class="option">
+                  <button class="dash" data-id="1">
+                    <i class="bi bi-dash-lg"></i>
+                  </button>
+                  <span class="result" data-id="1">1</span>
+                  <button class="plus" data-id="1">
+                    <i class="bi bi-plus-lg"></i>
+                  </button>
+                </div>
+                <div class="option-delete">
+                  <button type="button" class="X">X</button>
+                  <span class="won" data-id="1">1원</span>
+                </div>
+              </div>
+            </div>
+            <div class="item-detail">
+              <div class="item-info">
+                <input class="item-check" class="item" type="checkbox">
+                <img src="https://via.placeholder.com/80x80">
+                <div class="item-name">
+                  <h4>사세 리얼찹라이드손살치킨2kg</h4>
+                  <div class="how-much">11원</div>
+                </div>
+              </div>
+              <div class="item-option">
+                <div class="option">
+                  <button class="dash" data-id="2"><i class="bi bi-dash-lg"></i></button>
+                  <span class="result" data-id="2">1</span>
+                  <button class="plus" data-id="2"><i class="bi bi-plus-lg"></i></button>
+                </div>
+                <div class="option-delete">
+                  <button type="button" class="X">X</button>
+                  <span class="won" data-id="2">11원</span>
+                </div>
+              </div>
+            </div>
+            <div class="item-detail">
+              <div class="item-info">
+                <input class="item-check" class="item" type="checkbox">
+                <img src="https://via.placeholder.com/80x80">
+                <div class="item-name">
+                  <h4>사세 리얼찹라이드손살치킨3kg</h4>
+                  <div class="how-much">111원</div>
+
+                </div>
+              </div>
+              <div class="item-option">
+                <div class="option">
+                  <button class="dash" data-id="3"><i class="bi bi-dash-lg"></i></button>
+                  <span class="result" data-id="3">1</span>
+                  <button class="plus" data-id="3"><i class="bi bi-plus-lg"></i></button>
+                </div>
+                <div class="option-delete">
+                  <button type="button" class="X">X</button>
+                  <span class="won" data-id="3">111원</span>
+                </div>
+              </div>
+            </div>
+            <div class="item-detail">
+              <div class="item-info">
+                <input class="item-check" class="item" type="checkbox">
+                <img src="https://via.placeholder.com/80x80">
+                <div class="item-name">
+                  <h4>사세 리얼찹라이드손살치킨4kg</h4>
+                  <div class="how-much">1,111원</div>
+                </div>
+              </div>
+              <div class="item-option">
+                <div class="option">
+                  <button class="dash" data-id="4">
+                    <i class="bi bi-dash-lg"></i>
+                  </button>
+                  <span class="result" data-id="4">1</span>
+                  <button class="plus" data-id="4">
+                    <i class="bi bi-plus-lg"></i>
+                  </button>
+                </div>
+                <div class="option-delete">
+                  <button type="button" class="X">X</button>
+                  <span class="won" data-id="4">1,111원</span>
+                </div>
+              </div>
+            </div>
+            <div class="item-detail">
+              <div class="item-info">
+                <input class="item-check" class="item" type="checkbox">
+                <img src="https://via.placeholder.com/80x80">
+                <div class="item-name">
+                  <h4>사세 리얼찹라이드손살치킨5kg</h4>
+                  <div class="how-much">11,111원</div>
+                </div>
+              </div>
+              <div class="item-option">
+                <div class="option">
+                  <button class="dash" data-id="5">
+                    <i class="bi bi-dash-lg"></i>
+                  </button>
+                  <span class="result" data-id="5">1</span>
+
+                  <button class="plus" data-id="5">
+                    <i class="bi bi-plus-lg"></i>
+                  </button>
+                </div>
+                <div class="option-delete">
+                  <button type="button" class="X">X</button>
+                  <span class="won" data-id="5">11,111원</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="order">
+            <div class="price">
+              <div>
+                <p>총 선택상품금액</p>
+              </div>
+              <div>
+                <span id="total-price"> 0원</span>
+              </div>
+            </div>
+            <div class="price">
+              <div>
+                <p>예상 주문 금액</p>
+              </div>
+              <div>
+                <span id="estimated-price"> 0원</span>
+              </div>
+            </div>
+            <div class="oreder-now">
+              <button class="buy" onclick="buy()" id="buy">총 0건 주문하기 (0원)</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="script.js"></script>
+  <footer>
+    <div id="footer-placeholder"></div>
+  </footer>
+    <script src="장바구니.js"></script>
+</body>
+
+
+
+</html>

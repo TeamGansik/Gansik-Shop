@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="item-details.css">
+  <script>
+  </script>
+  <title>제품</title>
+</head>
+
+<body>
+  <header>
+    <div id="header-placeholder"></div>
+  </header>
+  <nav>
+    <!-- 네비 -->
+  </nav>
+
+  <main>
+    <div class="product-photo">
+      <img src="https://via.placeholder.com/464" alt="상품 이미지">
+    </div>
+    <div class="detail">
+      <div class="name">
+        <div class="category2">대충 카테고리</div>
+        <h1>대충 제품내용길게적으면 어찌될까요?엄청궁금해지네 한번 알아봐야겠다.</h1>
+        <div class="date">대충 수정날짜</div>
+      </div>
+      <div class="price">
+        <span id="won">22,222</span>원 <!-- 상품 가격 -->
+      </div>
+
+      <div class="quantity">
+        <div>
+          <button class="dash" type="button"><i class="bi bi-dash-lg"></i></button>
+          <span id="result">1</span> <!-- 수량 -->
+          <button class="plus" type="button"><i class="bi bi-plus-lg"></i></button>
+        </div>
+      </div>
+      <div class="total">
+        <div class="total-text">
+          <p>총 상품금액</p>
+        </div>
+        <div class="won">
+          <span id="money">22,222</span>원 <!-- 총 금액 -->
+        </div>
+      </div>
+      <div class="buy-button">
+        <button class="basket" id="basket" type="button">장바구니 담기</button>
+        <button class="buy" id="buy" type="button">바로구매</button>
+      </div>
+    </div>
+    </div>
+  </main>
+  <footer>
+    <div id="footer-placeholder"></div>
+  </footer>
+  <!-- 마우스 커서 이벤트 -->
+  <div class="cursor" style="z-index: 9999;">
+    <img src="/images/logo2.png">
+  </div>
+  <script>
+    document.addEventListener('mousemove', (e) => {
+      let mouseX = e.pageX + 0;
+      let mouseY = e.pageY + 0;
+
+      let cursor = document.querySelector('.cursor');
+      cursor.style.left = mouseX + 'px';
+      cursor.style.top = mouseY + 'px';
+    })
+  </script>
+
+  <!-- 동적로딩 -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      function loadHTML(url, elementId) {
+        fetch(url)
+          .then(response => response.text())
+          .then(data => {
+            document.getElementById(elementId).innerHTML = data;
+          })
+          .catch(error => console.error('Error loading the HTML:', error));
+      }
+
+      loadHTML('header.html', 'header-placeholder');
+      loadHTML('footer.html', 'footer-placeholder');
+    });
+  </script>
+  <script src="item-details.js"></script>
+</body>
+
+</html>

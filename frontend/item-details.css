@@ -1,0 +1,140 @@
+@font-face {
+  font-family: 'SpoqaHanSansNeo-Regular';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SpoqaHanSansNeo-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.cursor {
+  position: absolute;
+  pointer-events: none;    
+}
+
+.cursor img {
+  width: 75px; 
+  height: 75px;
+}
+/* 기본 폰트 & 커서 적용 */
+
+*{
+  margin: 0;
+}
+
+nav{
+  width: 1080px;
+}
+
+body {
+  margin: 0 auto;
+  padding: 0;
+  align-items: center;
+  box-sizing: border-box;
+  justify-content: center; /* 페이지 내용을 가운데 정렬 */
+}
+
+main {
+  width: 1080px;
+  margin: 0 auto;
+  padding:100px 0;
+  position: relative;
+  display:flex;
+  justify-content: space-between;
+}
+img {
+  margin: 40px 80px 40px 0;
+}
+
+.category2 {
+  margin: 35px 0 3px 0;
+}
+
+p {
+  margin: 25px 0 20px 0;
+
+}
+
+.detail {
+  margin-left: 50px;
+  margin-top: 45px;
+  font-family: 'SpoqaHanSansNeo-Regular';
+  font-weight: normal;
+  color: #181A1c;
+  width: 406px;
+}
+
+.name h1{
+  margin-bottom: 10px;
+}
+.date{
+  font-size: 13px;
+  color:#777;
+  margin-bottom: 10px;
+}
+
+.price {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom:20px;
+}
+
+
+.quantity span{
+  margin: 0 20px;
+}
+.quantity button{
+background-color: #fff;
+border: 1px solid rgba(200, 200 ,200, 0.5);
+width: 30px;
+height: 30px;
+padding: 0;
+cursor: pointer;
+}
+
+.total {
+  display: flex;
+  justify-content: space-between;
+  width: 406px;
+  margin-bottom: 13px;
+}
+.won{
+  text-align: center;
+  margin-top: 20px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+
+.buy-button .basket{
+  color: #e9302d; 
+  border: 1px solid #e9302d; 
+  background-color: white;
+  font-size: 16px;
+  font-weight: bold;
+  height: 56px;
+  width: 148px;
+  margin-right: 4px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.buy-button .basket:hover{
+  background-color: #f8f2f2;
+  filter: none !important;
+}
+
+.buy-button .buy{
+  color: white; 
+  background-color: #e9302d; 
+  border: none;
+  font-size: 16px;
+  font-weight: bold;
+  height: 56px;
+  width: 148px;
+  margin-right: 4px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.buy-button .buy:hover{
+  filter: brightness(150%);
+}

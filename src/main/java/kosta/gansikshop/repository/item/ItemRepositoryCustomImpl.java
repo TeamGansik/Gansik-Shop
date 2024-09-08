@@ -34,6 +34,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
         // Content 쿼리 (데이터 페칭)
         List<Item> content = queryFactory.selectFrom(item)
                 .where(builder)
+                .orderBy(item.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

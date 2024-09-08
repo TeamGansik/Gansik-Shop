@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>주문/배송</title>
+  <link rel="stylesheet" href="order-no.css">
+</head>
+
+<body>
+  <section class="section">
+    <div class="list">
+      <div class="introduce">
+        <div class="oneline">
+          <div class="myeat">나의eat</div>
+          <img src="logo2.png">
+        </div>
+        <div class="name"><strong id="userName">홍길동</strong>님</div>
+      </div>
+      <div class="detail">
+        <div class="detail-list">정보관리</div>
+        <div class="detail-select" onclick='location.href="order-yes.html"'>
+          <div class="order">주문/배송</div>
+          <div>&gt;</div>
+        </div>
+        <div class="detail-noselect" onclick='location.href="member-detail.html"'>
+          <div class="order">회원정보</div>
+          <div>&gt;</div>
+        </div>
+        <div class="detail-noselect" onclick='location.href="regist-no.html"'>
+          <div class="order">제품등록</div>
+          <div>&gt;</div>
+        </div>
+      </div>
+    </div>
+    <div id="orderContent" class="info">
+      <div class="content-name" style="margin-bottom: 7px; font-size: 20px;">
+        주문/배송
+      </div>
+      <hr>
+      <div class="content">
+        <!-- 주문 내역이 없을 때 기본 내용 -->
+        <div class="introduce">주문한 제품이 없네요...</div>
+        <button onclick="location.href='item-sort.html'">주문하러 가기</button>
+        <!-- 총 주문 금액을 표시할 곳 추가 -->
+        <div class="total-order-price" style="margin-top: 20px; font-size: 18px; font-weight: bold;"></div>
+      </div>
+    </div>
+  </section>
+
+  <script src="orderScript.js"></script>
+</body>
+
+</html>

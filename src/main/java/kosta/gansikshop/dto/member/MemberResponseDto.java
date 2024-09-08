@@ -16,10 +16,11 @@ public class MemberResponseDto {
     private String postcode;
     private String roadAddress;
     private String detailAddress;
+    private String role;
 
     public static MemberResponseDto createMemberResponseDto(String email, String name,
                                                             String phone, String postcode,
-                                                            String roadAddress, String detailAddress) {
+                                                            String roadAddress, String detailAddress, String role) {
         return MemberResponseDto.builder()
                 .email(email)
                 .name(name)
@@ -27,6 +28,7 @@ public class MemberResponseDto {
                 .postcode(postcode)
                 .roadAddress(roadAddress)
                 .detailAddress(detailAddress)
+                .role(role)
                 .build();
     }
 }
