@@ -51,7 +51,7 @@ public class MemberService {
         Member findMember = entityValidationService.validateMember(memberId);
 
         boolean isSameName = findMember.getName().equals(memberUpdateFormDto.getName());
-        boolean isSamePassword = findMember.getPassword().equals(bCryptPasswordEncoder.encode(memberUpdateFormDto.getPassword()));
+        boolean isSamePassword = bCryptPasswordEncoder.matches(memberUpdateFormDto.getPassword(), findMember.getPassword());
         boolean isSamePhone = findMember.getPhone().equals(memberUpdateFormDto.getPhone());
 
         Address currentAddress = findMember.getAddress();
@@ -70,11 +70,14 @@ public class MemberService {
                 memberUpdateFormDto.getDetailAddress()
         );
 
-        findMember.updateMember(memberUpdateFormDto.getName(),
+        findMember.updateMember(
+                memberUpdateFormDto.getName(),
                 bCryptPasswordEncoder.encode(memberUpdateFormDto.getPassword()),
                 memberUpdateFormDto.getPhone(),
-                newAddress);
+                newAddress
+        );
     }
+
 
     /** 회원 조회 */
     @Transactional(readOnly = true)
