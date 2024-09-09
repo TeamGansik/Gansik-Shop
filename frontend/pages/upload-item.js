@@ -104,12 +104,14 @@ function removeCheckedImages() {
 // 처음에 이미지 입력 하나 추가
 addImageInput();
 
-// 폼 제출 시 추가적인 검증 및 처리
-document.getElementById('updateItemForm').onsubmit = function (e) {
+// 상품 등록 API 호출
+document.getElementById('updateItemForm').onsubmit = async function (e) {
+    e.preventDefault(); // 기본 폼 제출 방지
+
     const items = imageList.getElementsByTagName('li');
     if (items.length === 0) {
         alert('적어도 하나의 이미지를 업로드해야 합니다.');
-        e.preventDefault(); // 폼 제출 막기
+        return;
     }
 
     const stockQuantity = parseInt(document.getElementById('stockQuantity').value, 10);
@@ -117,12 +119,51 @@ document.getElementById('updateItemForm').onsubmit = function (e) {
 
     if (stockQuantity < 100) {
         alert('수량을 100개 이상 넣어야 합니다.');
-        e.preventDefault(); // 폼 제출 막기
+        return;
     }
 
     if (price < 100) {
         alert('가격을 100원 이상 넣어야 합니다.');
-        e.preventDefault(); // 폼 제출 막기
+        return;
+    }
+
+    // FormData 객체에 폼 데이터와 파일 추가
+    const formData = new FormData();
+    formData.append('item', new Blob([JSON.stringify({
+        name: document.getElementById('name').value,
+        price: price,
+        stockQuantity: stockQuantity,
+        category: document.getElementById('category').value
+    })], { type: 'application/json' }));
+
+    // 이미지 파일들을 FormData에 추가
+    Array.from(items).forEach(item => {
+        const input = item.querySelector('input[type="file"]');
+        if (input.files.length > 0) {
+            formData.append('files', input.files[0]);
+        }
+    });
+
+    try {
+        const response = await fetch('http://localhost:8080/api/items', {
+            method: 'POST',
+            headers: {
+                'Authorization': localStorage.getItem('accessToken'),
+            },
+            body: formData
+        });
+
+        if (response.status == 201) {
+            alert('상품이 성공적으로 등록되었습니다.');
+        } else {
+            const errorMessage = await response.text();
+            alert('상품 등록에 실패했습니다: ' + errorMessage);
+        }
+    } catch (error) {
+        console.error('상품 등록 중 오류 발생:', error);
+        alert('상품 등록 중 오류가 발생했습니다. 다시 시도해 주세요.');
+    } finally {
+        window.location.assign('http://127.0.0.1:5501/main.html');
     }
 };
 

@@ -1,3 +1,75 @@
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        await loadUserData();
+
+    } catch (error) {
+        console.error('오류 발생:', error);
+    }
+});
+
+async function loadUserData() {
+    try {
+        const accessToken = localStorage.getItem('accessToken');
+        if (!accessToken) throw new Error('No access token found');
+
+        const response = await fetch('http://localhost:8080/api/members', {
+            method: 'GET',
+            headers: {
+                'Authorization': accessToken,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) throw new Error('Failed to fetch user data');
+
+        const userData = await response.json();
+        console.log('User Data:', userData);
+
+        // 이름
+        const userName = document.getElementById('name');
+        if (userName) {
+            userName.value = userData.name;
+        }
+
+        // 이메일
+        const userEmail = document.getElementById('email');
+        if (userEmail) {
+            userEmail.value = userData.email;
+        }
+
+        // 전화번호
+        const userPhone = document.getElementById('phone');
+        if (userPhone) {
+            userPhone.value = userData.phone;
+        }
+
+        // 우편번호
+        const userPostCode = document.getElementById('postcode');
+        if (userPostCode) {
+            userPostCode.value = userData.postcode;
+        }
+
+        // 도로명 주소
+        const userRoadAddress = document.getElementById('roadAddress');
+        if (userRoadAddress) {
+            userRoadAddress.value = userData.roadAddress;
+        }
+
+        // 상세 주소
+        const userDetailAddress = document.getElementById('detailAddress');
+        if (userDetailAddress) {
+            userDetailAddress.value = userData.detailAddress;
+        }
+    } catch (error) {
+        console.error('사용자 정보 로딩 중 오류 발생:', error);
+        const userNameElement = document.querySelector('.introduce .name strong');
+        if (userNameElement) {
+            userNameElement.textContent = '사용자';
+        }
+    }
+}
+
+
 let isEmailVerified = false;
 let verificationTimeout;
 
@@ -140,6 +212,8 @@ function verifyEmailCode() {
                 isEmailVerified = true;
                 document.getElementById("emailCode").setAttribute("readonly", true);
                 document.querySelector("#emailVerificationContainer button").setAttribute("disabled", true);
+                document.querySelector("#emailVerificationContainer button").style.backgroundColor = "#ccc";
+                document.querySelector("#emailVerificationContainer button").style.cursor = "not-allowed";
             } else {
                 emailCodeMessage.textContent = "인증번호가 일치하지 않습니다. 다시 확인해주세요.";
             }
@@ -227,7 +301,6 @@ function submitForm(event) {
     // 폼 데이터를 JSON 객체로 구성
     var formData = {
         name: document.getElementById("name").value,
-        email: document.getElementById("email").value,
         password: document.getElementById("password").value,
         phone: document.getElementById("phone").value,
         postcode: document.getElementById("postcode").value,
@@ -235,38 +308,36 @@ function submitForm(event) {
         detailAddress: document.getElementById("detailAddress").value
     };
 
-    // 회원가입 API로 POST 요청
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) throw new Error('No access token found');
+    
     fetch('http://localhost:8080/api/members', {
-        method: 'POST',
+        method: 'PUT',
         headers: {
+            'Authorization': accessToken,
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(formData)
     })
     .then(response => {
-        // JSON 응답일 경우 JSON 파싱, 아니면 텍스트로 처리
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-            return response.json(); // JSON 형식일 경우
+        console.log(response.status);  // 응답 상태 코드 출력
+        if (response.status === 200) {
+            console.log("회원수정 성공");
+             // 로그아웃 처리 (Token 삭제)
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            alert("회원수정이 완료되었습니다. 재로그인 해주십시오.");
+            window.location.href = 'login.html'; // 회원가입 후 로그인 페이지로 이동
+        } else if(response.status == 400) {
+            console.log("회원수정 실패:", response.body);
+            alert("수정된 회원 정보가 없습니다.");
         } else {
-            return response.text(); // 텍스트 형식일 경우
-        }
-    })
-    .then(data => {
-        // JSON 응답이거나 텍스트 응답을 처리
-        if (typeof data === 'object') {
-            if (data.success) {
-                alert("회원가입이 완료되었습니다.");
-                window.location.href = "로그인창.html"; // 회원가입 후 로그인 페이지로 이동
-            } else {
-                alert("회원가입에 실패했습니다. 다시 시도해주세요.");
-            }
-        } else {
-            alert(data); // 텍스트 메시지 출력
+            console.log("회원수정 실패:", response.status);
+            alert("회원수정에 실패했습니다. 다시 시도해주세요.");
         }
     })
     .catch(error => {
+        console.error("서버 오류:", error);  // 에러 로그 출력
         alert("서버 오류가 발생했습니다. 나중에 다시 시도해주세요.");
-        console.error("Error:", error); // 콘솔에 에러 출력
     });
 }

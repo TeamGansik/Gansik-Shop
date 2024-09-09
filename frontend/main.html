@@ -33,7 +33,7 @@
                 </div>
                 <div class="slider__btn">
                     <a href="#" class="prev" role="button" aria-label="왼쪽 이미지" style="transform: translateX(-6.8px);">
-                        << /a>
+                        <</a>
                             <a href="#" class="next" role="button" aria-label="오른쪽 이미지">></a>
                 </div>
                 <div class="slider__dot">
@@ -204,7 +204,7 @@
                 <!-- 더보기 -->
                 <div class="morebtn-container">
                     <div class="box-liner2">
-                        <button class="morebtn" onclick='location.href="상품정렬.html"'>더보기</button>
+                        <button class="morebtn" onclick='location.href="item-sort.html"'>더보기</button>
                     </div>
                 </div>
             </div>
@@ -226,53 +226,55 @@
         })
     </script>
 
+    <script src="pages/tokenManager.js"></script>
     <!-- 동적 로딩 및 로그인 상태 체크 -->
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             // 동적 HTML 로딩
-            function loadHTML(url, elementId) {
-                return fetch(url)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.text();
-                    })
-                    .then(data => {
-                        document.getElementById(elementId).innerHTML = data;
-                    });
+            async function loadHTML(url, elementId) {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.text();
+                document.getElementById(elementId).innerHTML = data;
             }
-
-            // header.html과 footer.html 로딩
-            await loadHTML('header.html', 'header-placeholder');
-            await loadHTML('footer.html', 'footer-placeholder');
-
-            // 로그인 상태 체크
+        
+            // 로그인 상태 체크 함수
             function checkLoginStatus(event) {
                 const accessToken = localStorage.getItem('accessToken');
-                
                 if (!accessToken) {
                     event.preventDefault(); // 기본 링크 동작 방지
                     alert('로그인이 필요한 서비스입니다.');
                     location.href = '/pages/login.html'; // 로그인 페이지로 리디렉션
                 }
             }
-
-            // 로그인 상태 체크 추가
+        
+            // header.html과 footer.html 로딩 후에 요소를 찾고 이벤트 리스너 등록
+            await loadHTML('header.html', 'header-placeholder');
+            await loadHTML('footer.html', 'footer-placeholder');
+        
+            // 동적으로 로드된 후에 이벤트 리스너 등록
             const myProfileLink = document.querySelector('.myPage');
             const cartLink = document.querySelector('.shoppingCart');
-
+        
             if (myProfileLink) {
                 myProfileLink.addEventListener('click', checkLoginStatus);
             }
-
+        
             if (cartLink) {
                 cartLink.addEventListener('click', checkLoginStatus);
             }
-        });
-    </script>
 
-    <script src="headerScript.js"></script>
+            // header.js를 동적으로 로드된 header.html 이후에 추가
+            const script = document.createElement('script');
+            script.src = 'header.js';
+            document.body.appendChild(script);
+        });        
+    </script>
+    
+    <script src="header.js"></script>
+    <script src="main.js"></script>
 </body>
 <footer>
     <div id="footer-placeholder"></div>

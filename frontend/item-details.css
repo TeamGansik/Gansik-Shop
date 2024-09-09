@@ -40,8 +40,49 @@ main {
   display:flex;
   justify-content: space-between;
 }
+/* 이미지 스타일 */
 img {
+  width: 464px; /* 고정된 너비 */
+  height: 464px; /* 고정된 높이 */
+  object-fit: contain; /* 이미지가 잘리지 않도록 유지 */
   margin: 40px 80px 40px 0;
+  display: block; /* 이미지 주위의 공간이 남지 않도록 설정 */
+  position: relative; /* 이미지를 기준으로 버튼을 배치하기 위해 relative로 설정 */
+}
+
+/* 슬라이드 버튼 스타일 */
+.slider-btn {
+  position: absolute;
+  top: 50%; /* 세로의 절반 위치 */
+  transform: translateY(-50%); /* 버튼을 정확히 중간에 위치시키기 위해 사용 */
+  background-color: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+  color: white; /* 버튼 텍스트 색상 */
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 1; /* 이미지 위에 표시되도록 설정 */
+}
+
+.slider-btn.prev {
+  left: -60px; /* 이미지 바깥쪽으로 이동 */
+}
+
+.slider-btn.next {
+  right: -60px; /* 이미지 바깥쪽으로 이동 */
+}
+
+.slider-btn:hover {
+  background-color: rgba(0, 0, 0, 0.8); /* 호버 시 조금 더 어두운 배경 */
+}
+
+
+/* 이미지 슬라이드 컨테이너 */
+.product-photo {
+  position: relative; /* 자식 요소인 버튼들을 절대 위치로 배치할 수 있도록 설정 */
+  width: 464px; /* 슬라이드 크기 고정 */
+  height: 464px;
 }
 
 .category2 {
