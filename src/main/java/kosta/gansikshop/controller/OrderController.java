@@ -33,7 +33,7 @@ public class OrderController {
             orderService.saveOrder(memberId, requestDto);
             return ResponseEntity.status(HttpStatus.CREATED).body("Order Success");
         } catch (NotEnoughStockException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Order Failed: Not enough stock available.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Order Failed: " + e.getMessage());
         }
