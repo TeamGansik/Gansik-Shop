@@ -7,6 +7,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -81,8 +83,13 @@ public class Item extends BaseEntity {
         this.stockQuantity = restStock;
     }
 
-    public void updateModifiedTime() {
+    public void updateModified() {
         this.modifiedAt = LocalDateTime.now();  // 수정 시간 갱신
+        // 수정자 설정
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String currentUserName = authentication.getName();  // 현재 인증된 사용자명 (이메일)
+            this.setUpdatedBy(currentUserName);  // 수정자 갱신
+        }
     }
-
 }

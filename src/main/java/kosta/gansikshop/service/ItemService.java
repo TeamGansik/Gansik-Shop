@@ -218,9 +218,9 @@ public class ItemService {
             throw new IllegalArgumentException("이미 같은 이름의 상품이 존재합니다.");
         }
 
-        // 상품 속성 값 변경 없이 이미지만 변경되어도 상품 수정시간 변경
+        // 상품 속성 값 변경 없이 이미지만 변경되어도 상품 수정시간 및 수정자 변경
         if (!isItemUpdated && isImageModified) {
-            findItem.updateModifiedTime();
+            findItem.updateModified();
         }
 
         // 상품 수정이 실제로 일어나지 않은 경우 예외 처리

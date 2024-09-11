@@ -20,4 +20,9 @@ public abstract class BaseEntity extends BaseTimeEntity {
     @LastModifiedBy
     @Column(name = "updated_by")
     private String updatedBy;
+
+    // 수정자를 설정하는 메서드 추가
+    protected void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
 }
