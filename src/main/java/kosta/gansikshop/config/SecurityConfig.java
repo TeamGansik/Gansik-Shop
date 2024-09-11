@@ -1,6 +1,9 @@
-package kosta.gansikshop.config.security;
+package kosta.gansikshop.config;
 
 import jakarta.servlet.http.HttpServletRequest;
+import kosta.gansikshop.security.CustomUserDetailsService;
+import kosta.gansikshop.security.JwtAuthenticationFilter;
+import kosta.gansikshop.security.JwtUtil;
 import kosta.gansikshop.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

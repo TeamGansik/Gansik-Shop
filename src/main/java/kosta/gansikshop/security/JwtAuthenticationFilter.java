@@ -1,4 +1,4 @@
-package kosta.gansikshop.config.security;
+package kosta.gansikshop.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

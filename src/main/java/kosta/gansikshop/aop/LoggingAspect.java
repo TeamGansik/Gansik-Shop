@@ -1,6 +1,6 @@
 package kosta.gansikshop.aop;
 
-import kosta.gansikshop.config.security.CustomUserDetails;
+import kosta.gansikshop.security.CustomUserDetails;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;

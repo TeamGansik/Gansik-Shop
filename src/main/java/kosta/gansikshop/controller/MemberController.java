@@ -1,6 +1,6 @@
 package kosta.gansikshop.controller;
 
-import kosta.gansikshop.config.security.CustomUserDetails;
+import kosta.gansikshop.security.CustomUserDetails;
 import kosta.gansikshop.dto.login.*;
 import kosta.gansikshop.dto.member.MemberResponseDto;
 import kosta.gansikshop.dto.member.MemberSingUpFormDto;

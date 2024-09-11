@@ -1,6 +1,6 @@
 package kosta.gansikshop.controller;
 
-import kosta.gansikshop.config.security.CustomUserDetails;
+import kosta.gansikshop.security.CustomUserDetails;
 import kosta.gansikshop.dto.image.ItemImgRequestDto;
 import kosta.gansikshop.dto.item.ItemDetailDto;
 import kosta.gansikshop.dto.item.ItemRequestDto;

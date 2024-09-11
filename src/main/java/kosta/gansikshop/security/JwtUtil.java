@@ -1,4 +1,4 @@
-package kosta.gansikshop.config.security;
+package kosta.gansikshop.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

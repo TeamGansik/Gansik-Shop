@@ -1,4 +1,4 @@
-package kosta.gansikshop.config.security;
+package kosta.gansikshop.security;
 
 import kosta.gansikshop.domain.Member;
 import kosta.gansikshop.repository.member.MemberRepository;

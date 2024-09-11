@@ -1,6 +1,6 @@
 package kosta.gansikshop.controller;
 
-import kosta.gansikshop.config.security.CustomUserDetails;
+import kosta.gansikshop.security.CustomUserDetails;
 import kosta.gansikshop.dto.order.OrderPageResponseDto;
 import kosta.gansikshop.dto.order.OrderRequestDto;
 import kosta.gansikshop.exception.NotEnoughStockException;
