@@ -8,6 +8,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 @Aspect
 @Component
 public class LoggingAspect {
@@ -36,26 +38,26 @@ public class LoggingAspect {
 
         try {
             if (currentDepth == 0) {
-                System.out.println("[" + transactionId + "] " + methodName + "()");
+                System.out.println("[" + LocalDateTime.now() + " " + transactionId + "] " + methodName + "()");
             } else {
-                System.out.println("[" + transactionId + "] " + logPrefix + "|-->" + methodName + "()");
+                System.out.println("[" + LocalDateTime.now() + " " + transactionId + "] " + logPrefix + "|-->" + methodName + "()");
             }
             depth.set(currentDepth + 1);
             Object proceed = joinPoint.proceed();
             long executionTime = System.currentTimeMillis() - start;
             if (currentDepth == 0) {
-                System.out.println("[" + transactionId + "] " + methodName + " time=" + executionTime + "ms");
+                System.out.println("[" + LocalDateTime.now() + " " + transactionId + "] " + methodName + " time=" + executionTime + "ms");
             } else {
-                System.out.println("[" + transactionId + "] " + logPrefix + "|<--" + methodName + " time=" + executionTime + "ms");
+                System.out.println("[" + LocalDateTime.now() + " " + transactionId + "] " + logPrefix + "|<--" + methodName + " time=" + executionTime + "ms");
             }
             return proceed;
         } catch (Throwable ex) {
             long executionTime = System.currentTimeMillis() - start;
             if (currentDepth == 0) {
-                System.out.println("[" + transactionId + "] " + methodName + " time=" + executionTime + "ms \n" +
+                System.out.println("[" + LocalDateTime.now() + " " + transactionId + "] " + methodName + " time=" + executionTime + "ms \n" +
                         "ex=" + ex.getClass().getName() + ": " + ex.getMessage());
             } else {
-                System.out.println("[" + transactionId + "] " + logPrefix + "|<X-" + methodName + " time=" + executionTime + "ms \n" +
+                System.out.println("[" + LocalDateTime.now() + " " + transactionId + "] " + logPrefix + "|<X-" + methodName + " time=" + executionTime + "ms \n" +
                         logPrefix + "ex=" + ex.getClass().getName() + ": " + ex.getMessage());
             }
             throw ex;
