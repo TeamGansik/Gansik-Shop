@@ -6,6 +6,7 @@ import kosta.gansikshop.domain.Member;
 import kosta.gansikshop.repository.cart.CartRepository;
 import kosta.gansikshop.repository.item.ItemRepository;
 import kosta.gansikshop.repository.member.MemberRepository;
+import kosta.gansikshop.repository.order.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ public class EntityValidationService {
     private final MemberRepository memberRepository;
     private final ItemRepository itemRepository;
     private final CartRepository cartRepository;
+    private final OrderRepository orderRepository;
 
     // Member 검증
     public Member validateMember(Long memberId) {
@@ -52,5 +54,10 @@ public class EntityValidationService {
     // 상품 수정 시 자신을 제외한 상품 중 동일한 상품 이름이 있는지 검증
     public boolean existItemNameExceptMe(String name, Long itemId) {
         return itemRepository.existsByNameAndIdNot(name, itemId);
+    }
+
+    // 상품 삭제 시 주문 내역에 상품이 포함되어 있는지 확인
+    public boolean existsOrderItemsInItem(Item item) {
+        return orderRepository.existsByOrderItemsItem(item);
     }
 }
