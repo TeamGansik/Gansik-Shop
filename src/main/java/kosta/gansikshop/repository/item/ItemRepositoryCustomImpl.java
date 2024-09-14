@@ -1,6 +1,6 @@
 package kosta.gansikshop.repository.item;
 
-import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kosta.gansikshop.domain.Item;
@@ -21,30 +21,33 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
     public Page<Item> searchItems(String keyword, String category, Pageable pageable) {
         QItem item = QItem.item;
 
-        BooleanBuilder builder = new BooleanBuilder();
+        // 동적 쿼리를 위한 BooleanExpression 생성
+        BooleanExpression keywordCondition = hasKeyword(keyword);
+        BooleanExpression categoryCondition = hasCategory(category);
 
-        if (keyword != null && !keyword.isEmpty()) {
-            builder.and(item.name.containsIgnoreCase(keyword));
-        }
-
-        if (category != null && !category.isEmpty()) {
-            builder.and(item.category.eq(category));
-        }
-
-        // Content 쿼리 (데이터 페칭)
         List<Item> content = queryFactory.selectFrom(item)
-                .where(builder)
+                .where(keywordCondition.and(categoryCondition))
                 .orderBy(item.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        // Count 쿼리 (전체 레코드 수 페칭) - 조건부로 실행되도록 정의
         JPAQuery<Long> countQuery = queryFactory.select(item.count())
                 .from(item)
-                .where(builder);
+                .where(keywordCondition.and(categoryCondition));
 
-        // PageableExecutionUtils.getPage 사용하여 카운트 쿼리를 생략할 수 있는 경우 자동으로 처리
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+
+    // 키워드 조건 생성 메서드
+    private BooleanExpression hasKeyword(String keyword) {
+        QItem item = QItem.item;
+        return (keyword == null || keyword.isEmpty()) ? null : item.name.containsIgnoreCase(keyword);
+    }
+
+    // 카테고리 조건 생성 메서드
+    private BooleanExpression hasCategory(String category) {
+        QItem item = QItem.item;
+        return (category == null || category.isEmpty()) ? null : item.category.eq(category);
     }
 }
