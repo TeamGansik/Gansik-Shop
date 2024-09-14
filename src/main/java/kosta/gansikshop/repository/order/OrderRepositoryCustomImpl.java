@@ -3,6 +3,7 @@ package kosta.gansikshop.repository.order;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import kosta.gansikshop.domain.Member;
 import kosta.gansikshop.domain.Order;
 import kosta.gansikshop.domain.QMember;
 import kosta.gansikshop.domain.QOrder;
@@ -17,6 +18,19 @@ import java.util.List;
 public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
+
+    @Override
+    public List<Order> findOrdersByMember(Member member) {
+        QOrder order = QOrder.order;
+        QMember qMember = QMember.member;
+
+        return queryFactory
+                .selectFrom(order)
+                .join(order.member, qMember).fetchJoin()
+                .where(order.member.eq(member))
+                .fetch();
+    }
+
 
     @Override
     public Page<Order> searchOrdersByMember(Long memberId, Pageable pageable) {

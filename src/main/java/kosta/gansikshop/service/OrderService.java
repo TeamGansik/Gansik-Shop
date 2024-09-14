@@ -97,7 +97,7 @@ public class OrderService {
         Member member = entityValidationService.validateMember(memberId);
 
         // 전체 주문의 총합 계산
-        int totalOrderPrice = orderRepository.findByMember(member)
+        int totalOrderPrice = orderRepository.findOrdersByMember(member)
                 .stream()
                 .mapToInt(Order::getTotalPrice)
                 .sum();
