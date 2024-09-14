@@ -2,14 +2,17 @@ package kosta.gansikshop.dto.item;
 
 import kosta.gansikshop.domain.Item;
 import kosta.gansikshop.domain.ItemImg;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ItemDetailDto {
     private Long itemId;
     private String name;

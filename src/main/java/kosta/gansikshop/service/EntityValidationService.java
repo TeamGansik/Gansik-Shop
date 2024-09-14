@@ -25,6 +25,7 @@ public class EntityValidationService {
                 .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 회원입니다."));
     }
 
+    // Member Email로 검증
     public Member validateMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));

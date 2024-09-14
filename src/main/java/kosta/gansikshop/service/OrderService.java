@@ -25,6 +25,7 @@ public class OrderService {
     private final CartRepository cartRepository;
     private final EntityValidationService entityValidationService;
 
+    /** 장바구니에서 결제 */
     @Transactional
     public void processOrder(Long memberId, List<OrderItemRequestDto> orderItems) {
         // Member 조회 및 유효성 검사
@@ -87,52 +88,6 @@ public class OrderService {
         // Order 생성
         Order order = Order.createOrder(member, orderItems);
         orderRepository.save(order);
-    }
-
-    /** 사용자의 모든 주문 조회 */
-    @Transactional(readOnly = true)
-    public OrderPageResponseDto getOrdersByMember(Long memberId) {
-        Member member = entityValidationService.validateMember(memberId);
-
-        // Fetch Join 사용한 성능 최적화
-        List<Order> orders = orderRepository.findOrdersWithItemsByMember(member);
-
-        // 전체 주문의 총합 계산
-        int totalOrderPrice = orderRepository.findByMember(member)
-                .stream()
-                .mapToInt(Order::getTotalPrice)
-                .sum();
-
-        List<OrderResponseDto> orderResponseDtoList = orders.stream()
-                .map(order -> {
-                    List<OrderItemResponseDto> orderItemResponseDtoList = order.getOrderItems().stream()
-                            .map(orderItem -> OrderItemResponseDto.builder()
-                                    .itemName(orderItem.getName())
-                                    .quantity(orderItem.getCount())
-                                    .itemPrice(orderItem.getTotalPrice() / orderItem.getCount())
-                                    .totalPrice(orderItem.getTotalPrice())
-                                    .build())
-                            .collect(Collectors.toList());
-
-                    return OrderResponseDto.builder()
-                            .orderItems(orderItemResponseDtoList)
-                            .build();
-                })
-                .collect(Collectors.toList());
-
-        return OrderPageResponseDto.builder()
-                .content(orderResponseDtoList)
-                .totalOrderPrice(totalOrderPrice) // 전체 총합
-                .pageable(null) // 페이지 정보가 필요하지 않으므로 null 설정
-                .last(true) // 전체 주문이 한 페이지로 간주되므로 true
-                .totalPages(1) // 전체 주문이 한 페이지로 간주되므로 1
-                .totalElements(orders.size()) // 총 주문 수
-                .size(orders.size()) // 페이지의 주문 수
-                .number(0) // 단일 페이지로 간주하므로 0
-                .first(true) // 단일 페이지로 간주하므로 true
-                .numberOfElements(orders.size()) // 페이지 내 요소 수
-                .empty(orders.isEmpty()) // 주문이 없는 경우 true
-                .build();
     }
 
     /** 사용자의 모든 주문 조회 (Paging 적용) */

@@ -3,7 +3,6 @@ package kosta.gansikshop.service;
 import kosta.gansikshop.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 public class TokenService {
 
     private final JwtUtil jwtUtil;
-    private final RedisTemplate<String, Object> redisTemplate;
 
     public String generateAccessToken(String email) {
         return jwtUtil.generateToken(email);
@@ -24,10 +22,6 @@ public class TokenService {
 
     public boolean validateAccessToken(String token) {
         return jwtUtil.validateToken(token);
-    }
-
-    public boolean validateRefreshToken(String token) {
-        return jwtUtil.validateRefreshToken(token);
     }
 
     public void invalidateToken(String token) {

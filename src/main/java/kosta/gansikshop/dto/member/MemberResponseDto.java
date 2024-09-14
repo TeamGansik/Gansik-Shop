@@ -6,9 +6,7 @@ import lombok.*;
  * Member 조회용 DTO
  */
 @Getter
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class MemberResponseDto {
     private String email;
     private String name;
@@ -17,6 +15,17 @@ public class MemberResponseDto {
     private String roadAddress;
     private String detailAddress;
     private String role;
+
+    @Builder
+    private MemberResponseDto(String email, String name, String phone, String postcode, String roadAddress, String detailAddress, String role) {
+        this.email = email;
+        this.name = name;
+        this.phone = phone;
+        this.postcode = postcode;
+        this.roadAddress = roadAddress;
+        this.detailAddress = detailAddress;
+        this.role = role;
+    }
 
     public static MemberResponseDto createMemberResponseDto(String email, String name,
                                                             String phone, String postcode,

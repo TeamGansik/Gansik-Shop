@@ -2,10 +2,13 @@ package kosta.gansikshop.dto.item;
 
 import kosta.gansikshop.domain.Item;
 import kosta.gansikshop.domain.ItemImg;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ItemSummaryDto {
     private Long itemId;
     private String name;

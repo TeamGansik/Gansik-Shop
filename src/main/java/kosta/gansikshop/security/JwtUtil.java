@@ -32,7 +32,7 @@ public class JwtUtil {
 
     // Access Token 발급 (기본 만료 시간: 15분)
     public String generateToken(String email) {
-        return generateToken(email, 1000 * 60 * 60);
+        return generateToken(email, 1000 * 60 * 15);
     }
 
     // Refresh Token 발급 (기본 만료 시간: 7일)

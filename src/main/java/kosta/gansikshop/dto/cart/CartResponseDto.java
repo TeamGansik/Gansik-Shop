@@ -1,11 +1,14 @@
 package kosta.gansikshop.dto.cart;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CartResponseDto {
     private List<CartItemDto> items;
 

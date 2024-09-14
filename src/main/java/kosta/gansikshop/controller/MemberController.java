@@ -117,9 +117,9 @@ public class MemberController {
             System.out.println("Extracted Refresh Token: " + jwtRefreshToken);
             String newAccessToken = memberService.refreshAccessToken(jwtRefreshToken);
 
-            return ResponseEntity.status(HttpStatus.OK).body(RefreshTokenResponse.builder()
-                    .newToken("Bearer "+ newAccessToken)
-                    .build());
+            return ResponseEntity.status(HttpStatus.OK).body(RefreshTokenResponse.createRefreshTokenResponse(
+                    "Bearer " + newAccessToken)
+                    );
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류가 발생했습니다." + e.getMessage());
         }

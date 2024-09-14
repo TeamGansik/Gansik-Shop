@@ -20,9 +20,7 @@ public class TokenController {
     public ResponseEntity<?> validateToken(@RequestHeader("Authorization") String token) {
         String jwtToken = token.replace("Bearer ", "");
         boolean isValid = tokenService.validateAccessToken(jwtToken);
-        return ResponseEntity.ok(TokenValidationResponse.builder()
-                .valid(isValid)
-                .build());
+        return ResponseEntity.ok(TokenValidationResponse.createTokenValidationResponse(isValid));
     }
 
     /** Refresh Token 재발급 */
@@ -32,13 +30,11 @@ public class TokenController {
             String jwtRefreshToken = refreshToken.replace("Bearer ", "");
             String email = tokenService.extractUsername(jwtRefreshToken);
             String newRefreshToken = tokenService.regenerateRefreshToken(email);
-            return ResponseEntity.ok(RefreshTokenResponse.builder()
-                    .newToken("Bearer "+ newRefreshToken)
-                    .build());
+            return ResponseEntity.ok(RefreshTokenResponse.createRefreshTokenResponse(
+                            "Bearer " + newRefreshToken
+                    ));
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(ErrorResponse.builder()
-                    .message(e.getMessage())
-                    .build());
+            return ResponseEntity.badRequest().body(ErrorResponse.createErrorResponse(e.getMessage()));
         }
     }
 }
