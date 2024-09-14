@@ -29,29 +29,20 @@ public class Order extends BaseEntity {
 
     @Builder
     private Order(Member member, List<OrderItem> orderItems) {
-        setMember(member);
-        for (OrderItem orderItem : orderItems) {
-            addOrderItem(orderItem);
-        }
+        this.member = member;
+        this.orderItems = orderItems;
     }
 
     /** Order 생성 메서드 */
     public static Order createOrder(Member member, List<OrderItem> orderItems) {
-        return Order.builder()
+        Order order = Order.builder()
                 .member(member)
                 .orderItems(orderItems)
                 .build();
-    }
-
-    /** 연관 관계 메서드*/
-    protected void setMember(Member member) {
-        this.member = member;
-//        member.getOrders().add(this); // 양방향 관계 설정 시 주석 해제
-    }
-
-    protected void addOrderItem(OrderItem orderItem) {
-        orderItems.add(orderItem);
-        orderItem.setOrder(this);
+        for (OrderItem orderItem : orderItems) {
+            orderItem.setOrder(order);
+        }
+        return order;
     }
 
     /** Business Logic **/

@@ -47,9 +47,12 @@ public class OrderItem {
     }
 
 
-    /** 연관 관계 메서드 작성 위해 protected setOrder 작성 */
+    /** 연관 관계 메서드 */
     protected void setOrder(Order order) {
         this.order = order;
+        if (!order.getOrderItems().contains(this)) {
+            order.getOrderItems().add(this);
+        }
     }
 
     /** OrderItem 생성 메서드*/

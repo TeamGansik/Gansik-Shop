@@ -56,17 +56,6 @@ public class Item extends BaseEntity {
         this.category = category;
     }
 
-    public void addImage(ItemImg itemImg) {
-        images.add(itemImg);
-        itemImg.setItem(this);
-    }
-
-    public void removeImage(ItemImg itemImg) {
-        images.remove(itemImg);
-        itemImg.setItem(null);
-    }
-
-
     /** Business Logic */
 
     /** 재고 증가 */
