@@ -25,8 +25,9 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
         BooleanExpression keywordCondition = hasKeyword(keyword);
         BooleanExpression categoryCondition = hasCategory(category);
 
+        // where 조건에서 null을 무시하기 위해 isNotNull()을 사용하여 안전하게 처리
         List<Item> content = queryFactory.selectFrom(item)
-                .where(keywordCondition.and(categoryCondition))
+                .where(combineConditions(keywordCondition, categoryCondition))
                 .orderBy(item.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -34,7 +35,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
 
         JPAQuery<Long> countQuery = queryFactory.select(item.count())
                 .from(item)
-                .where(keywordCondition.and(categoryCondition));
+                .where(combineConditions(keywordCondition, categoryCondition));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
@@ -49,5 +50,16 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
     private BooleanExpression hasCategory(String category) {
         QItem item = QItem.item;
         return (category == null || category.isEmpty()) ? null : item.category.eq(category);
+    }
+
+    // 여러 BooleanExpression을 결합하는 메서드
+    private BooleanExpression combineConditions(BooleanExpression... conditions) {
+        BooleanExpression result = null;
+        for (BooleanExpression condition : conditions) {
+            if (condition != null) {
+                result = (result == null) ? condition : result.and(condition);
+            }
+        }
+        return result;
     }
 }
