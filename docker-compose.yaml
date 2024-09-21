@@ -1,0 +1,30 @@
+name: 'Gansik-Backend'
+services:
+  db:
+    image: mysql:8
+    container_name: gansik-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: gansik
+    networks:
+      - gansik-network
+    volumes:
+      - db_data:/var/lib/mysql
+
+  app:
+    image: gansikapp:v1
+    container_name: gansik-app
+    depends_on:
+      - db
+    networks:
+      - gansik-network
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/gansik
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+
+networks:
+  gansik-network:
+
+volumes:
+  db_data:
