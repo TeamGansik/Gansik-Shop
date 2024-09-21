@@ -13,13 +13,25 @@ services:
     volumes:
       - db_data:/var/lib/mysql
 
+  redis:
+    image: redis:7
+    container_name: gansik-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - gansik-network
+    volumes:
+      - redis_data:/data
+
   app:
     image: gansikapp:v1
     container_name: gansik-app
     depends_on:
       - db
+      - redis
     ports:
       - "8080:8080"
+      - "9292:9292"
     networks:
       - gansik-network
     environment:
@@ -27,8 +39,12 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
 
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+
 networks:
   gansik-network:
 
 volumes:
   db_data:
+  redis_data:
