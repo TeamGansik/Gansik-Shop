@@ -6,6 +6,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: gansik
+    ports:
+      - "3307:3306"
     networks:
       - gansik-network
     volumes:
@@ -16,6 +18,8 @@ services:
     container_name: gansik-app
     depends_on:
       - db
+    ports:
+      - "8080:8080"
     networks:
       - gansik-network
     environment:
