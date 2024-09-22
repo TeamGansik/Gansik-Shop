@@ -1,5 +1,6 @@
 package kosta.gansikshop.controller;
 
+import kosta.gansikshop.aop.MailApi;
 import kosta.gansikshop.service.email.AuthenticationService;
 import kosta.gansikshop.service.email.MailService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ public class MailController {
     private final MailService mailService;
     private final AuthenticationService authenticationService;
 
+    @MailApi
     @PostMapping
     public ResponseEntity<Map<String, Object>> mailSend(@RequestBody Map<String, String> request) {
         Map<String, Object> map = new HashMap<>();
@@ -36,6 +38,7 @@ public class MailController {
 
 
     /** 인증 번호 확인 */
+    @MailApi
     @PostMapping("/check")
     public ResponseEntity<?> mailCheck(@RequestBody Map<String, String> request) {
         String email = request.get("email");

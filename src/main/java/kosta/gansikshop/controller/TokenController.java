@@ -1,6 +1,6 @@
 package kosta.gansikshop.controller;
 
-import kosta.gansikshop.dto.login.ErrorResponse;
+import kosta.gansikshop.aop.TokenApi;
 import kosta.gansikshop.dto.login.RefreshTokenResponse;
 import kosta.gansikshop.dto.login.TokenValidationResponse;
 import kosta.gansikshop.service.TokenService;
@@ -16,6 +16,7 @@ public class TokenController {
     private final TokenService tokenService;
 
     /** Token 인증 */
+    @TokenApi
     @GetMapping("/validate")
     public ResponseEntity<?> validateToken(@RequestHeader("Authorization") String token) {
         String jwtToken = token.replace("Bearer ", "");
@@ -24,6 +25,7 @@ public class TokenController {
     }
 
     /** Refresh Token 재발급 */
+    @TokenApi
     @PostMapping("/refresh")
     public ResponseEntity<?> regenerateRefreshToken(@RequestHeader("Authorization") String refreshToken) {
         String jwtRefreshToken = refreshToken.replace("Bearer ", "");

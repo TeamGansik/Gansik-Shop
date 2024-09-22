@@ -1,16 +1,12 @@
 package kosta.gansikshop.controller;
 
-import kosta.gansikshop.security.CustomUserDetails;
+import kosta.gansikshop.aop.SecurityAspect;
 import kosta.gansikshop.dto.cart.CartRequestDto;
 import kosta.gansikshop.dto.cart.CartResponseDto;
 import kosta.gansikshop.service.CartService;
-import kosta.gansikshop.service.EntityValidationService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,15 +17,11 @@ import java.util.List;
 public class CartController {
 
     private final CartService cartService;
-    private final EntityValidationService entityValidationService;
 
     /** 장바구니 추가 */
     @PostMapping
     public ResponseEntity<?> addCart(@RequestBody CartRequestDto cartRequestDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        String userEmail = userDetails.getUsername();
-        Long memberId = entityValidationService.validateMemberByEmail(userEmail).getId(); // 이메일로 회원 ID 조회
+        Long memberId = SecurityAspect.getCurrentMemberId();
 
         boolean isNewCart = cartService.addCart(memberId, cartRequestDto);
         if (isNewCart) {
@@ -42,10 +34,7 @@ public class CartController {
     /** 장바구니 항목 수량 업데이트 */
     @PutMapping("/{cartItemId}")
     public ResponseEntity<String> updateCartItem(@PathVariable Long cartItemId, @RequestParam int count) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        String userEmail = userDetails.getUsername();
-        Long memberId = entityValidationService.validateMemberByEmail(userEmail).getId();
+        Long memberId = SecurityAspect.getCurrentMemberId();
 
         // 수량이 1 미만으로 내려가지 않도록 처리
         if (count < 1) {
@@ -58,11 +47,7 @@ public class CartController {
     /** 장바구니 삭제 */
     @DeleteMapping
     public ResponseEntity<String> deleteSelectedCarts(@RequestParam List<Long> cartItemIds) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        String userEmail = userDetails.getUsername();
-        Long memberId = entityValidationService.validateMemberByEmail(userEmail).getId();
-
+        Long memberId = SecurityAspect.getCurrentMemberId();
         cartService.deleteCartItems(memberId, cartItemIds);
         return ResponseEntity.status(HttpStatus.OK).body("선택한 상품들이 장바구니에서 제거되었습니다.");
     }
@@ -70,11 +55,7 @@ public class CartController {
     /** 장바구니 조회 */
     @GetMapping
     public ResponseEntity<?> getCartItems() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        String userEmail = userDetails.getUsername();
-        Long memberId = entityValidationService.validateMemberByEmail(userEmail).getId();
-
+        Long memberId = SecurityAspect.getCurrentMemberId();
         CartResponseDto cartItems = cartService.getCartItems(memberId);
         return ResponseEntity.status(HttpStatus.OK).body(cartItems);
     }

@@ -1,12 +1,12 @@
 package kosta.gansikshop.controller;
 
+import kosta.gansikshop.aop.PublicApi;
+import kosta.gansikshop.aop.SecurityAspect;
 import kosta.gansikshop.exception.ResourceNotFoundException;
-import kosta.gansikshop.security.CustomUserDetails;
 import kosta.gansikshop.dto.image.ItemImgRequestDto;
 import kosta.gansikshop.dto.item.ItemDetailDto;
 import kosta.gansikshop.dto.item.ItemRequestDto;
 import kosta.gansikshop.dto.item.ItemSummaryDto;
-import kosta.gansikshop.service.EntityValidationService;
 import kosta.gansikshop.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,8 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,16 +28,12 @@ import java.util.stream.Collectors;
 public class ItemController {
 
     private final ItemService itemService;
-    private final EntityValidationService entityValidationService;
 
     /** 상품 등록 (여러 이미지 등록 가능) */
     @PostMapping
     public ResponseEntity<?> saveItem(@RequestPart("item") ItemRequestDto requestDto,
                                       @RequestPart(value = "files") List<MultipartFile> files) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        String userEmail = userDetails.getUsername();
-        Long memberId = entityValidationService.validateMemberByEmail(userEmail).getId();
+        Long memberId = SecurityAspect.getCurrentMemberId();
 
         List<ItemImgRequestDto> imgRequestDtoList = files.stream()
                 .map(file -> ItemImgRequestDto.builder()
@@ -57,10 +51,7 @@ public class ItemController {
     public ResponseEntity<?> updateItem(@PathVariable Long itemId,
                                         @RequestPart("item") ItemRequestDto requestDto,
                                         @RequestPart(value = "files", required = false) List<MultipartFile> files) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        String userEmail = userDetails.getUsername();
-        Long memberId = entityValidationService.validateMemberByEmail(userEmail).getId();
+        Long memberId = SecurityAspect.getCurrentMemberId();
 
         // MultipartFile 리스트를 ItemImageDto 리스트로 변환
         List<ItemImgRequestDto> imgRequestDtoList = files != null ? files.stream()
@@ -77,16 +68,13 @@ public class ItemController {
     /** 상품 삭제 */
     @DeleteMapping("/{itemId}")
     public ResponseEntity<?> deleteItem(@PathVariable Long itemId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        String userEmail = userDetails.getUsername();
-        Long memberId = entityValidationService.validateMemberByEmail(userEmail).getId(); // 이메일로 회원 ID 조회
-
+        Long memberId = SecurityAspect.getCurrentMemberId();
         itemService.deleteItem(itemId);
         return ResponseEntity.ok().body("상품이 삭제되었습니다.");
     }
 
     /** 통합 상품 검색 API */
+    @PublicApi
     @GetMapping
     public ResponseEntity<?> getItems(
             @RequestParam(value = "keyword", required = false) String keyword,
@@ -105,6 +93,7 @@ public class ItemController {
     }
 
     /** 상품 상세 조회 API */
+    @PublicApi
     @GetMapping("/{itemId}")
     public ResponseEntity<?> getItem(@PathVariable Long itemId) {
         ItemDetailDto itemDetail = itemService.getItem(itemId);
