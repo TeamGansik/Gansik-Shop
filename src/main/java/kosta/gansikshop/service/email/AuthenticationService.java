@@ -5,10 +5,11 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class AuthenticationService {
-    private final Map<String, CodeWithTimestamp> verificationCodes = new HashMap<>();
+    private final Map<String, CodeWithTimestamp> verificationCodes = new ConcurrentHashMap<>();
     private static final long EXPIRATION_TIME = 3 * 60 * 1000; // 제한시간 3분
 
     // 인증 코드를 생성하고 저장
