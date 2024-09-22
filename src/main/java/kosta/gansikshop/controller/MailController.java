@@ -26,9 +26,7 @@ public class MailController {
         String email = request.get("email");
 
         if (email == null || email.isEmpty()) {
-            map.put("success", Boolean.FALSE);
-            map.put("error", "이메일 주소가 필요합니다.");
-            return ResponseEntity.badRequest().body(map);
+            throw new IllegalArgumentException("이메일 주소가 필요합니다.");
         }
 
         mailService.sendMail(email);
