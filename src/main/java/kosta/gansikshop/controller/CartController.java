@@ -18,7 +18,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/carts")
-@Slf4j
 public class CartController {
 
     private final CartService cartService;
@@ -27,78 +26,56 @@ public class CartController {
     /** 장바구니 추가 */
     @PostMapping
     public ResponseEntity<?> addCart(@RequestBody CartRequestDto cartRequestDto) {
-        try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            String userEmail = userDetails.getUsername();
-            Long memberId = entityValidationService.validateMemberByEmail(userEmail).getId(); // 이메일로 회원 ID 조회
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String userEmail = userDetails.getUsername();
+        Long memberId = entityValidationService.validateMemberByEmail(userEmail).getId(); // 이메일로 회원 ID 조회
 
-            boolean isNewCart = cartService.addCart(memberId, cartRequestDto);
-            if (isNewCart) {
-                return ResponseEntity.status(HttpStatus.CREATED).body("장바구니에 상품이 추가되었습니다.");
-            } else {
-                return ResponseEntity.status(HttpStatus.OK).body("장바구니에 담긴 상품의 수량이 추가되었습니다.");
-            }
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 에러가 발생했습니다.");
+        boolean isNewCart = cartService.addCart(memberId, cartRequestDto);
+        if (isNewCart) {
+            return ResponseEntity.status(HttpStatus.CREATED).body("장바구니에 상품이 추가되었습니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body("장바구니에 담긴 상품의 수량이 추가되었습니다.");
         }
     }
 
     /** 장바구니 항목 수량 업데이트 */
     @PutMapping("/{cartItemId}")
     public ResponseEntity<String> updateCartItem(@PathVariable Long cartItemId, @RequestParam int count) {
-        try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            String userEmail = userDetails.getUsername();
-            Long memberId = entityValidationService.validateMemberByEmail(userEmail).getId();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String userEmail = userDetails.getUsername();
+        Long memberId = entityValidationService.validateMemberByEmail(userEmail).getId();
 
-            // 수량이 1 미만으로 내려가지 않도록 처리
-            if (count < 1) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("최소 수량은 1개입니다.");
-            }
-            cartService.updateCartItem(memberId, cartItemId, count);
-            return ResponseEntity.status(HttpStatus.OK).body("장바구니 항목의 수량이 업데이트되었습니다.");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 에러가 발생했습니다.");
+        // 수량이 1 미만으로 내려가지 않도록 처리
+        if (count < 1) {
+            throw new IllegalArgumentException("최소 수량은 1개입니다.");
         }
+        cartService.updateCartItem(memberId, cartItemId, count);
+        return ResponseEntity.status(HttpStatus.OK).body("장바구니 항목의 수량이 업데이트되었습니다.");
     }
 
     /** 장바구니 삭제 */
     @DeleteMapping
     public ResponseEntity<String> deleteSelectedCarts(@RequestParam List<Long> cartItemIds) {
-        try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            String userEmail = userDetails.getUsername();
-            Long memberId = entityValidationService.validateMemberByEmail(userEmail).getId();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String userEmail = userDetails.getUsername();
+        Long memberId = entityValidationService.validateMemberByEmail(userEmail).getId();
 
-            cartService.deleteCartItems(memberId, cartItemIds);
-            return ResponseEntity.status(HttpStatus.OK).body("선택한 상품들이 장바구니에서 제거되었습니다.");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 에러가 발생했습니다.");
-        }
+        cartService.deleteCartItems(memberId, cartItemIds);
+        return ResponseEntity.status(HttpStatus.OK).body("선택한 상품들이 장바구니에서 제거되었습니다.");
     }
 
     /** 장바구니 조회 */
     @GetMapping
     public ResponseEntity<?> getCartItems() {
-        try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            String userEmail = userDetails.getUsername();
-            Long memberId = entityValidationService.validateMemberByEmail(userEmail).getId();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String userEmail = userDetails.getUsername();
+        Long memberId = entityValidationService.validateMemberByEmail(userEmail).getId();
 
-            CartResponseDto cartItems = cartService.getCartItems(memberId);
-            return ResponseEntity.status(HttpStatus.OK).body(cartItems);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 에러가 발생했습니다.");
-        }
+        CartResponseDto cartItems = cartService.getCartItems(memberId);
+        return ResponseEntity.status(HttpStatus.OK).body(cartItems);
     }
 }

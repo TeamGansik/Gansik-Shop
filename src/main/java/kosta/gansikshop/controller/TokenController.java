@@ -26,15 +26,10 @@ public class TokenController {
     /** Refresh Token 재발급 */
     @PostMapping("/refresh")
     public ResponseEntity<?> regenerateRefreshToken(@RequestHeader("Authorization") String refreshToken) {
-        try {
-            String jwtRefreshToken = refreshToken.replace("Bearer ", "");
-            String email = tokenService.extractUsername(jwtRefreshToken);
-            String newRefreshToken = tokenService.regenerateRefreshToken(email);
-            return ResponseEntity.ok(RefreshTokenResponse.createRefreshTokenResponse(
-                            "Bearer " + newRefreshToken
-                    ));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(ErrorResponse.createErrorResponse(e.getMessage()));
-        }
+        String jwtRefreshToken = refreshToken.replace("Bearer ", "");
+        String email = tokenService.extractUsername(jwtRefreshToken);
+        String newRefreshToken = tokenService.regenerateRefreshToken(email);
+        return ResponseEntity.ok(RefreshTokenResponse.createRefreshTokenResponse("Bearer " + newRefreshToken));
     }
 }
+

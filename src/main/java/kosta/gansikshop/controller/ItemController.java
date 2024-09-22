@@ -1,5 +1,6 @@
 package kosta.gansikshop.controller;
 
+import kosta.gansikshop.exception.ResourceNotFoundException;
 import kosta.gansikshop.security.CustomUserDetails;
 import kosta.gansikshop.dto.image.ItemImgRequestDto;
 import kosta.gansikshop.dto.item.ItemDetailDto;
@@ -35,79 +36,57 @@ public class ItemController {
     @PostMapping
     public ResponseEntity<?> saveItem(@RequestPart("item") ItemRequestDto requestDto,
                                       @RequestPart(value = "files") List<MultipartFile> files) {
-        try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            String userEmail = userDetails.getUsername();
-            Long memberId = entityValidationService.validateMemberByEmail(userEmail).getId(); // 이메일로 회원 ID 조회
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String userEmail = userDetails.getUsername();
+        Long memberId = entityValidationService.validateMemberByEmail(userEmail).getId();
 
-            // MultipartFile 리스트를 ItemImageDto 리스트로 변환
-            List<ItemImgRequestDto> imgRequestDtoList = files.stream()
-                    .map(file -> ItemImgRequestDto.builder()
-                            .file(file)
-                            .isRepImg(files.indexOf(file) == 0)
-                            .build())
-                    .collect(Collectors.toList());
+        List<ItemImgRequestDto> imgRequestDtoList = files.stream()
+                .map(file -> ItemImgRequestDto.builder()
+                        .file(file)
+                        .isRepImg(files.indexOf(file) == 0) // 첫 번째 파일을 대표 이미지로 설정
+                        .build())
+                .collect(Collectors.toList());
 
-            itemService.saveItem(requestDto, imgRequestDtoList);
-            return ResponseEntity.status(HttpStatus.CREATED).body("상품이 등록되었습니다.");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+        itemService.saveItem(requestDto, imgRequestDtoList);
+        return ResponseEntity.status(HttpStatus.CREATED).body("상품이 등록되었습니다.");
     }
 
     /** 상품 수정 */
     @PutMapping("/{itemId}")
     public ResponseEntity<?> updateItem(@PathVariable Long itemId,
                                         @RequestPart("item") ItemRequestDto requestDto,
-                                        @RequestPart(value = "files") List<MultipartFile> files) {
-        try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            String userEmail = userDetails.getUsername();
-            Long memberId = entityValidationService.validateMemberByEmail(userEmail).getId(); // 이메일로 회원 ID 조회
+                                        @RequestPart(value = "files", required = false) List<MultipartFile> files) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String userEmail = userDetails.getUsername();
+        Long memberId = entityValidationService.validateMemberByEmail(userEmail).getId();
 
-            // MultipartFile 리스트를 ItemImageDto 리스트로 변환
-            List<ItemImgRequestDto> imgRequestDtoList = files != null ? files.stream()
-                    .map(file -> ItemImgRequestDto.builder()
-                            .file(file)
-                            .isRepImg(files.indexOf(file) == 0) // 첫 번째 파일을 대표 이미지로 설정
-                            .build())
-                    .collect(Collectors.toList()) : Collections.emptyList();
+        // MultipartFile 리스트를 ItemImageDto 리스트로 변환
+        List<ItemImgRequestDto> imgRequestDtoList = files != null ? files.stream()
+                .map(file -> ItemImgRequestDto.builder()
+                        .file(file)
+                        .isRepImg(files.indexOf(file) == 0) // 첫 번째 파일을 대표 이미지로 설정
+                        .build())
+                .collect(Collectors.toList()) : Collections.emptyList();
 
-            // 서비스로 update 요청
-            itemService.updateItem(itemId, requestDto, imgRequestDtoList);
-            return ResponseEntity.status(HttpStatus.OK).body("상품 정보가 수정되었습니다.");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+        itemService.updateItem(itemId, requestDto, imgRequestDtoList);
+        return ResponseEntity.status(HttpStatus.OK).body("상품 정보가 수정되었습니다.");
     }
 
     /** 상품 삭제 */
     @DeleteMapping("/{itemId}")
     public ResponseEntity<?> deleteItem(@PathVariable Long itemId) {
-        try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            String userEmail = userDetails.getUsername();
-            Long memberId = entityValidationService.validateMemberByEmail(userEmail).getId(); // 이메일로 회원 ID 조회
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String userEmail = userDetails.getUsername();
+        Long memberId = entityValidationService.validateMemberByEmail(userEmail).getId(); // 이메일로 회원 ID 조회
 
-            itemService.deleteItem(itemId);
-            return ResponseEntity.ok().body("상품이 삭제되었습니다.");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+        itemService.deleteItem(itemId);
+        return ResponseEntity.ok().body("상품이 삭제되었습니다.");
     }
 
-    /**
-     * 통합 상품 검색 API
-     *
-     * @param keyword 검색 키워드 (선택적)
-     * @param category 검색할 카테고리 (선택적)
-     * @param page 페이지 번호
-     * @param size 페이지당 아이템 수
-     * @return 검색된 상품 목록
-     */
+    /** 통합 상품 검색 API */
     @GetMapping
     public ResponseEntity<?> getItems(
             @RequestParam(value = "keyword", required = false) String keyword,
@@ -116,39 +95,22 @@ public class ItemController {
             @RequestParam(value = "size", defaultValue = "20") int size,
             PagedResourcesAssembler<ItemSummaryDto> assembler) {
 
-        try {
-            // keyword&category 동시에 제공되면 예외 처리
-            if ((keyword != null && !keyword.isEmpty()) && (category != null && !category.isEmpty())) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 요청입니다.");
-            }
-
-            // Pageable 객체 생성 (PageRequest 페이지와 사이즈를 처리)
-            Pageable pageable = PageRequest.of(page, size);
-
-            // 검색 수행
-            Page<ItemSummaryDto> items = itemService.searchItems(keyword, category, pageable);
-
-            return ResponseEntity.status(HttpStatus.OK).body(assembler.toModel(items));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류가 발생했습니다.");
+        if ((keyword != null && !keyword.isEmpty()) && (category != null && !category.isEmpty())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 요청입니다.");
         }
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ItemSummaryDto> items = itemService.searchItems(keyword, category, pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(assembler.toModel(items));
     }
 
-    /**
-     * 상품 상세 조회 API
-     *
-     * @param itemId 상품 ID
-     * @return 상품 상세 정보
-     */
+    /** 상품 상세 조회 API */
     @GetMapping("/{itemId}")
     public ResponseEntity<?> getItem(@PathVariable Long itemId) {
-        try {
-            ItemDetailDto itemDetail = itemService.getItem(itemId);
-            return ResponseEntity.status(HttpStatus.OK).body(itemDetail);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        ItemDetailDto itemDetail = itemService.getItem(itemId);
+        if (itemDetail == null) {
+            throw new ResourceNotFoundException("상품을 찾을 수 없습니다. ID: " + itemId);
         }
+        return ResponseEntity.status(HttpStatus.OK).body(itemDetail);
     }
 }

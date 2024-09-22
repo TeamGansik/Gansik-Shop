@@ -25,103 +25,71 @@ public class MemberController {
     /** 회원가입 */
     @PostMapping
     public ResponseEntity<?> saveMember(@RequestBody MemberSingUpFormDto singUpFormDto) {
-        try {
-            memberService.saveMember(singUpFormDto);
-            return ResponseEntity.status(HttpStatus.CREATED).body("회원가입에 성공했습니다.");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+        memberService.saveMember(singUpFormDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body("회원가입에 성공했습니다.");
     }
 
     /** 회원수정 */
     @PutMapping
     public ResponseEntity<?> updateMember(@RequestBody MemberUpdateFormDto updateFormDto) {
-        try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            String userEmail = userDetails.getUsername();
-            Long memberId = entityValidationService.validateMemberByEmail(userEmail).getId(); // 이메일로 회원 ID 조회
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String userEmail = userDetails.getUsername();
+        Long memberId = entityValidationService.validateMemberByEmail(userEmail).getId(); // 이메일로 회원 ID 조회
 
-            memberService.updateMember(memberId, updateFormDto);
-            return ResponseEntity.status(HttpStatus.OK).body("회원 정보가 수정되었습니다.");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+        memberService.updateMember(memberId, updateFormDto);
+        return ResponseEntity.status(HttpStatus.OK).body("회원 정보가 수정되었습니다.");
     }
 
     /** 회원정보 조회 */
     @GetMapping
     public ResponseEntity<?> getMember() {
-        try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            String userEmail = userDetails.getUsername();
-            Long memberId = entityValidationService.validateMemberByEmail(userEmail).getId(); // 이메일로 회원 ID 조회
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String userEmail = userDetails.getUsername();
+        Long memberId = entityValidationService.validateMemberByEmail(userEmail).getId(); // 이메일로 회원 ID 조회
 
-            MemberResponseDto responseDto = memberService.getMember(memberId);
-            return ResponseEntity.status(HttpStatus.OK).body(responseDto);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+        MemberResponseDto responseDto = memberService.getMember(memberId);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
     /** 회원탈퇴 */
     @DeleteMapping
     public ResponseEntity<?> deleteMember() {
-        try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            String userEmail = userDetails.getUsername();
-            Long memberId = entityValidationService.validateMemberByEmail(userEmail).getId(); // 이메일로 회원 ID 조회
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String userEmail = userDetails.getUsername();
+        Long memberId = entityValidationService.validateMemberByEmail(userEmail).getId(); // 이메일로 회원 ID 조회
 
-            memberService.deleteMember(memberId);
-            return ResponseEntity.status(HttpStatus.OK).body("회원 탈퇴하였습니다.");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+        memberService.deleteMember(memberId);
+        return ResponseEntity.status(HttpStatus.OK).body("회원 탈퇴하였습니다.");
     }
 
     /** 로그인 */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
-        try {
-            String tokens = memberService.login(loginDto);
-            String[] splitTokens = tokens.split(":");
-            return ResponseEntity.status(HttpStatus.OK).body(LoginResponseDto.createLoginResponseDto(
-                    "Bearer " + splitTokens[0],
-                            "Bearer " + splitTokens[1]));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+        String tokens = memberService.login(loginDto);
+        String[] splitTokens = tokens.split(":");
+        return ResponseEntity.status(HttpStatus.OK).body(LoginResponseDto.createLoginResponseDto(
+                "Bearer " + splitTokens[0], "Bearer " + splitTokens[1]));
     }
 
     /** 로그아웃 */
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String token, @RequestHeader("Refresh-Token") String refreshToken) {
-        try {
-            String jwtToken = token.replace("Bearer ", "");
-            String jwtRefreshToken = refreshToken.replace("Bearer ", "");
-            memberService.logout(jwtToken, jwtRefreshToken);
-            return ResponseEntity.status(HttpStatus.OK).body("로그아웃 하였습니다.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류가 발생했습니다." + e.getMessage());
-        }
+        String jwtToken = token.replace("Bearer ", "");
+        String jwtRefreshToken = refreshToken.replace("Bearer ", "");
+        memberService.logout(jwtToken, jwtRefreshToken);
+        return ResponseEntity.status(HttpStatus.OK).body("로그아웃에 성공습니다.");
     }
 
     /** Access Token 재발급 */
     @PostMapping("/refresh-token")
     public ResponseEntity<?> refreshAccessToken(@RequestHeader("Refresh-Token") String refreshToken) {
-        try {
-            // Bearer 제거 로직 추가
-            String jwtRefreshToken = refreshToken.replace("Bearer ", "");
-            System.out.println("Extracted Refresh Token: " + jwtRefreshToken);
-            String newAccessToken = memberService.refreshAccessToken(jwtRefreshToken);
-
-            return ResponseEntity.status(HttpStatus.OK).body(RefreshTokenResponse.createRefreshTokenResponse(
-                    "Bearer " + newAccessToken)
-                    );
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류가 발생했습니다." + e.getMessage());
-        }
+        String jwtRefreshToken = refreshToken.replace("Bearer ", "");
+        String newAccessToken = memberService.refreshAccessToken(jwtRefreshToken);
+        return ResponseEntity.status(HttpStatus.OK).body(RefreshTokenResponse.createRefreshTokenResponse(
+                "Bearer " + newAccessToken));
     }
 }
+
