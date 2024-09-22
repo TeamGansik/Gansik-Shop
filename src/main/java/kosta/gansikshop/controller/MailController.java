@@ -20,28 +20,22 @@ public class MailController {
     private final MailService mailService;
     private final AuthenticationService authenticationService;
 
-    /** 인증 번호 이메일 송신 요청 */
     @PostMapping
-    public HashMap<String, Object> mailSend(@RequestBody Map<String, String> request) {
-        HashMap<String, Object> map = new HashMap<>();
+    public ResponseEntity<Map<String, Object>> mailSend(@RequestBody Map<String, String> request) {
+        Map<String, Object> map = new HashMap<>();
         String email = request.get("email");
 
         if (email == null || email.isEmpty()) {
             map.put("success", Boolean.FALSE);
             map.put("error", "이메일 주소가 필요합니다.");
-            return map;
+            return ResponseEntity.badRequest().body(map);
         }
 
-        try {
-            mailService.sendMail(email);
-            map.put("success", Boolean.TRUE);
-        } catch (Exception e) {
-            map.put("success", Boolean.FALSE);
-            map.put("error", e.getMessage());
-        }
-
-        return map;
+        mailService.sendMail(email);
+        map.put("success", Boolean.TRUE);
+        return ResponseEntity.ok(map);
     }
+
 
     /** 인증 번호 확인 */
     @PostMapping("/check")
