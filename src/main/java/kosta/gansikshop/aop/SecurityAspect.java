@@ -26,7 +26,6 @@ public class SecurityAspect {
             "!@annotation(kosta.gansikshop.aop.MailApi) && " +
             "!@annotation(kosta.gansikshop.aop.TokenApi)")
     public Object injectMemberId(ProceedingJoinPoint joinPoint) throws Throwable {
-        System.out.println("AOP 메서드 실행 중...");
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -35,10 +34,8 @@ public class SecurityAspect {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         String userEmail = userDetails.getUsername();
-        System.out.println("userEmail = " + userEmail);
 
         Long memberId = entityValidationService.validateMemberByEmail(userEmail).getId();
-        System.out.println("memberId = " + memberId);
 
         memberIdHolder.set(memberId);
 
