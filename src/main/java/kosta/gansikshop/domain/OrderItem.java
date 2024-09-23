@@ -32,9 +32,9 @@ public class OrderItem {
     private OrderItem(Order order, Item item, String name, int orderPrice, int count) {
         this.order = order;
         this.item = item;
-        this.name = item.getName();
-        this.orderPrice = orderPrice; //주문 가격
-        this.count = count; // 주문 수량
+        this.name = name;
+        this.orderPrice = orderPrice;
+        this.count = count;
     }
 
     /** 대표 이미지 가져오기 */
