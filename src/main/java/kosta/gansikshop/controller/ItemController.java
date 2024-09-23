@@ -84,7 +84,7 @@ public class ItemController {
             PagedResourcesAssembler<ItemSummaryDto> assembler) {
 
         if ((keyword != null && !keyword.isEmpty()) && (category != null && !category.isEmpty())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 요청입니다.");
+            throw new IllegalArgumentException("잘못된 요청입니다.");
         }
 
         Pageable pageable = PageRequest.of(page, size);
