@@ -33,6 +33,7 @@ public class ItemController {
     @PostMapping
     public ResponseEntity<?> saveItem(@RequestPart("item") ItemRequestDto requestDto,
                                       @RequestPart(value = "files") List<MultipartFile> files) {
+        // memberId는 인증을 위해 필수적으로 받아와야 한다.
         Long memberId = SecurityAspect.getCurrentMemberId();
 
         List<ItemImgRequestDto> imgRequestDtoList = files.stream()
@@ -51,6 +52,7 @@ public class ItemController {
     public ResponseEntity<?> updateItem(@PathVariable Long itemId,
                                         @RequestPart("item") ItemRequestDto requestDto,
                                         @RequestPart(value = "files", required = false) List<MultipartFile> files) {
+        // memberId는 인증을 위해 필수적으로 받아와야 한다.
         Long memberId = SecurityAspect.getCurrentMemberId();
 
         // MultipartFile 리스트를 ItemImageDto 리스트로 변환
@@ -68,6 +70,7 @@ public class ItemController {
     /** 상품 삭제 */
     @DeleteMapping("/{itemId}")
     public ResponseEntity<?> deleteItem(@PathVariable Long itemId) {
+        // memberId는 인증을 위해 필수적으로 받아와야 한다.
         Long memberId = SecurityAspect.getCurrentMemberId();
         itemService.deleteItem(itemId);
         return ResponseEntity.ok().body("상품이 삭제되었습니다.");
